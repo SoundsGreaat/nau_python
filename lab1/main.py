@@ -1,3 +1,7 @@
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
+
 def calculate_deposit():
     while True:
         try:
@@ -22,16 +26,23 @@ def calculate_deposit():
     annual_rate = 0.2
     monthly_rate = annual_rate / 12
     total_amount = deposit_amount
+    current_date = date.today()
+    tomorrows_date = current_date + relativedelta(days=1)
 
+    print(f'\nДата оформлення: {current_date.strftime("%d/%m/%Y")}'
+          f'\nДата початку дії договору: {tomorrows_date.strftime("%d/%m/%Y")}\n')
     print('Щомісячний графік нарахувань:')
-    for i in range(deposit_term):
-        print(f'\nРік {i + 1}:')
+
+    for year in range(deposit_term):
+        print(f'\nРік {year + 1}:')
         monthly_interest = total_amount * monthly_rate
         for month in range(12):
             total_amount += monthly_interest
-            print(f'Місяць {month + 1}: {total_amount:.2f} грн. | +{monthly_interest:.2f} грн.')
+            print(f'{tomorrows_date.strftime("%d/%m/%Y")}: {total_amount:.2f} грн. | '
+                  f'+{monthly_interest:.2f} грн.')
+            tomorrows_date += relativedelta(months=1)
 
-    print(f'Загальна сума: {total_amount:.2f} грн.')
+    print(f'\nЗагальна сума: {total_amount:.2f} грн.')
     return
 
 
