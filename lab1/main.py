@@ -1,5 +1,6 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from tabulate import tabulate
 
 
 def calculate_deposit():
@@ -28,34 +29,35 @@ def calculate_deposit():
     total_amount = deposit_amount
     current_date = date.today()
     tomorrows_date = current_date + relativedelta(days=1)
-    month_counter = 0
+    month_counter = 1
+    data = []
 
     print(f'\nДата оформлення: {current_date.strftime("%d/%m/%Y")}'
           f'\nДата початку дії договору: {tomorrows_date.strftime("%d/%m/%Y")}\n')
     print('Щомісячний графік нарахувань:')
 
     for year in range(deposit_term):
-        # print(f'\nРік {year + 1}:')
         monthly_interest = total_amount * monthly_rate
         total_amount_lock = total_amount
         for month in range(12):
-            month_counter += 1
             total_amount += monthly_interest
-
-            message = (f'{month_counter}  '
-                       f'{tomorrows_date.strftime("%d/%m/%Y")}: {total_amount:.2f} грн. | '
-                       f'+{monthly_interest:.2f} грн.')
             if month_counter % 12 == 0:
-                message += f' | +{total_amount - total_amount_lock:.2f} грн.'
-            if (month_counter - 1) % 12 == 0 and year != 0:
-                message += f' | <- капіталізація суми'
+                capitalization = f'+{total_amount - total_amount_lock:.2f} грн.'
+            elif (month_counter - 1) % 12 == 0 and year != 0:
+                capitalization = '<- капіталізація суми'
+            else:
+                capitalization = ''
 
-            print(message)
+            data.append([month_counter, tomorrows_date.strftime('%d/%m/%Y'), f'{total_amount:.2f} грн.',
+                         f'+{monthly_interest:.2f} грн.', capitalization])
+            month_counter += 1
             tomorrows_date += relativedelta(months=1)
 
-    print(f'\nЗагальна сума: {total_amount:.2f} грн.'
-          f'\nДохід: {total_amount - deposit_amount:.2f} грн.')
-    return
+    headers = ['Місяць', 'Дата', 'Загальна сума', 'Приріст', 'Капіталізація']
+    print(tabulate(data, headers, tablefmt='pretty'))
+
+    print(f'\nЗагальна сума: {total_amount:.2f} грн.')
+    print(f'Дохід: {total_amount - deposit_amount:.2f} грн.')
 
 
 if __name__ == '__main__':
