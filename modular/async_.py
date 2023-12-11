@@ -1,30 +1,21 @@
 import asyncio
-from datetime import datetime
-from core import worker
-
-base_currency = 'USD'
-target_currency = 'CZK'
-dates = ['12-10-2023', '13-10-2023', '14-10-2023']
+from core import worker, speed_test, base_currency, target_currency, dates
 
 
-async def process_date(date):
+async def process_date(base_currency, target_currency, date):
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, worker, base_currency, target_currency, date)
 
 
-async def async_way():
+@speed_test
+async def async_way(base_currency, target_currency, dates):
     print('Async way:')
 
-    tasks = [process_date(date) for date in dates]
+    tasks = [process_date(base_currency, target_currency, date) for date in dates]
 
     await asyncio.gather(*tasks)
+    print()
 
 
 if __name__ == "__main__":
-    start_time = datetime.now()
-
-    asyncio.run(async_way())
-
-    end_time = datetime.now()
-    duration = end_time - start_time
-    print(f'Total time taken (async way): {duration}')
+    asyncio.run(async_way(base_currency, target_currency, dates))

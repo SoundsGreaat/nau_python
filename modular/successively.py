@@ -1,22 +1,13 @@
-from datetime import datetime
-from core import worker
-
-base_currency = 'USD'
-target_currency = 'CZK'
-dates = ['12-10-2023', '13-10-2023', '14-10-2023']
+from core import worker, speed_test, base_currency, target_currency, dates
 
 
-def successively_way():
+@speed_test
+def successively_way(base_currency, target_currency, dates):
     print('Successively way:')
     for date in dates:
         worker(base_currency, target_currency, date)
+    print()
 
 
 if __name__ == "__main__":
-    start_time = datetime.now()
-
-    successively_way()
-
-    end_time = datetime.now()
-    duration = end_time - start_time
-    print(f'Total time taken (successively way): {duration}')
+    successively_way(base_currency, target_currency, dates)

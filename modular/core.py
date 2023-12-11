@@ -1,5 +1,10 @@
 import requests
+import inspect
 from datetime import datetime
+
+base_currency = 'USD'
+target_currency = 'CZK'
+dates = ['12-10-2023', '13-10-2023', '14-10-2023']
 
 
 class CurrencyRate:
@@ -41,6 +46,34 @@ def worker(base_currency, target_currency, date):
     currency_rate.process_data()
 
     print(currency_rate)
+
+
+def speed_test(func):
+    def wrapper(*args, **kwargs):
+        start_time = datetime.now()
+
+        func(*args, **kwargs)
+
+        end_time = datetime.now()
+        duration = end_time - start_time
+        print(f'Total time taken ({func.__name__}): {duration}\n')
+        with open('results.txt', 'a+') as file:
+            file.write(f'{func.__name__}: {duration}\n')
+
+    async def async_wrapper(*args, **kwargs):
+        start_time = datetime.now()
+
+        await func(*args, **kwargs)
+
+        end_time = datetime.now()
+        duration = end_time - start_time
+        print(f'Total time taken ({func.__name__}): {duration}\n')
+        with open('results.txt', 'a+') as file:
+            file.write(f'{func.__name__}: {duration}\n')
+
+    if inspect.iscoroutinefunction(func):
+        return async_wrapper
+    return wrapper
 
 
 if __name__ == '__main__':

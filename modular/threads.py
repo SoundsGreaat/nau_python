@@ -1,13 +1,9 @@
 import threading
-from datetime import datetime
-from core import worker
-
-base_currency = 'USD'
-target_currency = 'CZK'
-dates = ['12-10-2023', '13-10-2023', '14-10-2023']
+from core import worker, speed_test, base_currency, target_currency, dates
 
 
-def thread_way():
+@speed_test
+def thread_way(base_currency, target_currency, dates):
     print('Thread way:')
     threads = []
     for date in dates:
@@ -17,13 +13,8 @@ def thread_way():
 
     for thread in threads:
         thread.join()
+    print()
 
 
 if __name__ == "__main__":
-    start_time = datetime.now()
-
-    thread_way()
-
-    end_time = datetime.now()
-    duration = end_time - start_time
-    print(f'Total time taken (thread way): {duration}')
+    thread_way(base_currency, target_currency, dates)
